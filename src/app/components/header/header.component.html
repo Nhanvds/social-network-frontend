@@ -1,0 +1,58 @@
+<header>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" style="height: 70px;"
+    aria-label="Offcanvas navbar large">
+    <div class="container-fluid ">
+
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar2"
+        aria-controls="offcanvasNavbar2" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="offcanvas offcanvas-end text-bg-dark " tabindex="-1" id="offcanvasNavbar2"
+        aria-labelledby="offcanvasNavbar2Label">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasNavbar2Label">Menu</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+            aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body row">
+
+          <ul class="navbar-nav  d-flex justify-content-around align-items-center">
+            <a class="navbar-brand" href="#">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="50" height="50">
+                <circle cx="50" cy="50" r="45" fill="rgb(240, 101, 197)" />
+                <circle cx="50" cy="50" r="35" fill="rgb(127, 68, 255)" />
+              </svg>
+            </a>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">Trang chủ</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="#">Tin nhắn</a>
+            </li>
+            <form class="d-flex mt-3 mt-lg-0 h-3" role="search" style="height: 40px;">
+              <input class="form-control me-2 " type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+            <div class="dropdown d-flex justify-content-between align-items-center">
+              <button class="btn btn-secondary d-flex space-between " type="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                <img class="rounded-circle" alt="image" width="40" height="40" src={{userDetail?.urlAvatar}}>
+                <p style="overflow: hidden;">{{userDetail?.username}}ssssss</p>
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Trang cá nhân</a></li>
+                <li><a class="dropdown-item" href="#">Đổi mật khẩu</a></li>
+                <li><a class="dropdown-item" (click)="logout()">Đăng xuất</a></li>
+              </ul>
+            </div>
+
+          </ul>
+
+
+
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>

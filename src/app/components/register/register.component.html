@@ -1,0 +1,54 @@
+
+<div class="container d-flex flex-column ">
+    <h1>Đăng Kí</h1>
+    <p *ngIf="errorMessage">{{errorMessage}}</p>
+<form [ngClass]="{'hidden-element':isRegister}">
+    <!-- Email input -->
+    <div class="form-outline mb-4">
+        <label class="form-label" for="email" >Email</label>
+      <input type="email" id="email"  [(ngModel)]="email" name="email" class="form-control" />
+      
+    </div>
+
+    <div class="form-outline mb-4">
+        <label class="form-label" for="username"
+        >Usename</label>
+      <input type="text" id="username" [(ngModel)]="username" name="username" class="form-control" />
+    </div>
+  
+    <!-- Password input -->
+    <div class="form-outline mb-4">
+        <label class="form-label" for="password"
+         >Password</label>
+      <input type="password" id="password" [(ngModel)]="password" name="password" class="form-control" />
+     
+    </div>
+    <div class="form-outline mb-4">
+      <label class="form-label" for="confirmPassword"
+       >Confirm Password</label>
+    <input type="password" id="confirmPassword" [(ngModel)]="confirmPassword" name="confirmPassword" class="form-control" />
+   
+  </div>
+    <button type="button" class="btn btn-primary btn-block mb-4" (click)="register()">Register</button>
+
+
+    
+  </form>
+
+  <form [ngClass]="{'hidden-element': isVerify}">
+    <h5>Mã xác thực đã được gửi đến email user.com</h5>
+    <div class="form-outline mb-4">
+        <label class="form-label" for="form2Example1">Mã xác thực</label>
+      <input type="text" [(ngModel)]="verificationToken" name="verificationToken" id="form2Example1" class="form-control" />
+    </div>
+    
+
+    <button type="button" class="btn btn-primary btn-block mb-4" (click)="verify()" >Xác thực</button>
+    <button type="button" class="btn btn-primary btn-block mb-4" (click)="sendEmail()"
+      *ngIf="canSendMail"
+    >Gửi lại mã</button>
+
+  </form>
+
+
+</div>
