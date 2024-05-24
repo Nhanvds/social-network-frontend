@@ -1,0 +1,92 @@
+
+.post{
+    background-color: #242527;
+    border-radius: 10px;
+    margin-bottom: 40px;
+}
+
+.carousel-item img {
+    width: 100%; /* Đảm bảo ảnh rộng bằng 100% của thẻ chứa nó */
+    max-height: 100vh; /* Đảm bảo ảnh cao bằng 100% của thẻ chứa nó */
+    object-fit: contain; /* Đảm bảo ảnh được thu nhỏ hoặc phóng to sao cho nó vẫn nằm bên trong kích thước của thẻ */
+}
+#image-uploaded .carousel-inner .carousel-item img {
+    width: auto; /* Đảm bảo ảnh rộng bằng 100% của thẻ chứa nó */
+    max-height: 200px; /* Đảm bảo ảnh cao bằng 100% của thẻ chứa nó */
+    object-fit: contain; /* Đảm bảo ảnh được thu nhỏ hoặc phóng to sao cho nó vẫn nằm bên trong kích thước của thẻ */
+}
+.react{
+    background-color: rgb(197, 197, 183);
+    justify-content: center;
+    align-items: center;
+}
+.btn-create-post{
+    border-radius: 10px;
+    width: 90%;
+    height: 50px;
+}
+.create-post{
+    height: 100px;
+    border-radius: 10px;
+    background-color: #242527;
+    margin-bottom: 20px;
+}
+.modal-content {
+    background-color:#242527; 
+    color: white; 
+}
+.modal-body{
+    height: 700px;
+}
+.modal-body .content{
+    margin-top: 5px;
+    background-color: #3a3b3d;
+    border-radius: 15px;
+}
+.content-post{
+    padding: 5px;
+}
+.form-comment{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    padding: 15px;
+    width: 100%;
+}
+.form-comment textarea{
+    width: 80%;
+    margin-right: 5px;
+    min-height: 100px;
+    max-height: 150px;
+    border-radius: 5px;
+}
+.form-comment button{
+    height: 40px;
+    width: 20%;
+}
+
+.reaction{
+    width: 15%;
+    display: flex;
+    justify-content: space-between;
+}
+.border-top{
+    margin-top:10px ;
+    border-top: 2px;
+}
+
+.input-search {
+    color: white;
+}
+
+.form-group label {
+    color: white;
+}
+
+
+
+
+
+
+
+

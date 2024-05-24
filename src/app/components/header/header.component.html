@@ -15,7 +15,8 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
             aria-label="Close"></button>
         </div>
-        <div class="offcanvas-body row">
+        
+        <div class="offcanvas-body row" *ngIf="isLoggedIn">
 
           <ul class="navbar-nav  d-flex justify-content-around align-items-center">
             <a class="navbar-brand" href="#">
@@ -25,32 +26,24 @@
               </svg>
             </a>
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Trang chủ</a>
+              <a class="nav-link active" aria-current="page" [routerLink]="['/']">Trang chủ</a>
             </li>
             <li class="nav-item">
               <a class="nav-link active" href="#">Tin nhắn</a>
             </li>
-            <form class="d-flex mt-3 mt-lg-0 h-3" role="search" style="height: 40px;">
-              <input class="form-control me-2 " type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
+
             <div class="dropdown d-flex justify-content-between align-items-center">
               <button class="btn btn-secondary d-flex space-between " type="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
                 <img class="rounded-circle" alt="image" width="40" height="40" src={{userDetail?.urlAvatar}}>
-                <p style="overflow: hidden;">{{userDetail?.username}}ssssss</p>
+                <p style="overflow: hidden;">{{userDetail?.username}}</p>
               </button>
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Trang cá nhân</a></li>
-                <li><a class="dropdown-item" href="#">Đổi mật khẩu</a></li>
+                <li><a class="dropdown-item" [routerLink]="['/profile',userDetail?.id]">Trang cá nhân</a></li>
                 <li><a class="dropdown-item" (click)="logout()">Đăng xuất</a></li>
               </ul>
             </div>
-
           </ul>
-
-
-
         </div>
       </div>
     </div>

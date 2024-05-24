@@ -6,6 +6,7 @@ import { Token } from 'src/app/model/token';
 import { UserDetail } from 'src/app/model/userdetail';
 import { TokenService } from 'src/app/service/token.service';
 import { UserService } from 'src/app/service/user.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-register',
@@ -14,7 +15,7 @@ import { UserService } from 'src/app/service/user.service';
 })
 export class RegisterComponent {
 
-  email: string = '12213';
+  email: string = '';
   username: string = '';
   password: string = '';
   confirmPassword: string = '';
@@ -44,7 +45,8 @@ export class RegisterComponent {
     const user: UserDTO = {
       email: this.email,
       username: this.username,
-      password: this.password
+      password: this.password,
+      urlAvatar: environment.urlAvatarDefault
     }
     debugger
     this.userService.register(user).subscribe({

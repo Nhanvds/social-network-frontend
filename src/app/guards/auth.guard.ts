@@ -16,12 +16,11 @@ export class AuthGuard{
     const isTokenExpired = this.tokenService.isTokenExpired();
     const isUserIdValid = this.tokenService.getUserId() >0;
     // const role =  kiem tra role
-
     // debugger
     if(!isTokenExpired&& isUserIdValid){
       return true;
     }else{
-      this.router.navigate(["/users/login"])
+      this.router.navigate(["/login"])
       return false;
     }
   }

@@ -2,43 +2,47 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HomeComponent } from './components/home/home.component';
-import { DetailPostComponent } from './components/detail-post/detail-post.component';
 import { HeaderComponent } from './components/header/header.component';
-import { FooterComponent } from './components/footer/footer.component';
-import { CommentComponent } from './components/comment/comment.component';
-import { PostComponent } from './components/post/post.component';
-import { LoginComponent } from './components/login/login.component';
-import { RegisterComponent } from './components/register/register.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './interceptors/token.interceptor';
-import { AngularFontAwesomeModule } from 'angular-font-awesome';
-import { BodyComponent } from './components/body/body.component';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { ProfileComponent } from './components/profile/profile.component';
+import { RegisterComponent } from './components/register/register.component';
+import { LoginComponent } from './components/login/login.component';
+import { PostComponent } from './components/post/post.component';
+import { UserComponent } from './components/user/user.component';
+import { AdminComponent } from './components/admin/admin.component';
+import { ManagePostComponent } from './components/manage-post/manage-post.component';
+import { ManageUserComponent } from './components/manage-user/manage-user.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
+    UserComponent,
+    AdminComponent,
     AppComponent,
-    LoginComponent,
-    HomeComponent,
-    CommentComponent,
-    PostComponent,
-    DetailPostComponent,
     HeaderComponent,
-    FooterComponent,
-    CommentComponent,
+    SidebarComponent,
+    ProfileComponent,
     RegisterComponent,
-    BodyComponent
+    LoginComponent,
+    PostComponent,
+    ManagePostComponent,
+    ManageUserComponent,
+   
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     NgbModule,
     FormsModule,
-    HttpClientModule 
-
+    HttpClientModule,
+    BrowserAnimationsModule ,
+    MatPaginatorModule
   ],
   providers: [
     {

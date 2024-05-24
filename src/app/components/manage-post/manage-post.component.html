@@ -1,0 +1,198 @@
+<div class="container mt-5 input-search">
+    <h3 style=" text-align: center; margin-bottom: 20px;">Quản lý bài viết</h3>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="general-keyword">Từ khóa chung:</label>
+                <input type="text" class="form-control" id="general-keyword" [(ngModel)]="commonSearch"
+                    name="general-keyword">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="post-id">ID bài viết:</label>
+                <input type="text" class="form-control" id="post-id" [(ngModel)]="postId" name="post-id">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="content-post">Nội dung bài viết:</label>
+                <input type="text" class="form-control" id="content-post" [(ngModel)]="content" name="content-post">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="date-from">Ngày tạo từ ngày:</label>
+                <input type="date" class="form-control" id="date-from" [(ngModel)]="createdTimeFrom" name="date-from">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="date-to">Ngày tạo đến ngày:</label>
+                <input type="date" class="form-control" id="date-to" [(ngModel)]="createdTimeTo" name="date-to">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="status">Trạng thái bài viết:</label>
+                <select class="form-select" id="status" [(ngModel)]="isLocked" name="status">
+                    <option value="false" [selected]="isLocked==false">Hoạt động</option>
+                    <option value="true" [selected]="isLocked==true">Bị khóa</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="userId">ID người dùng:</label>
+                <input type="text" class="form-control" id="userId" name="userId">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="access">Quyền truy cập bài viết:</label>
+                <select class="form-select" id="access" [(ngModel)]="privacyPost" (change)="searchPosts()"
+                    name="access">
+                    <option value="true" [selected]="privacyPost==true">Bạn bè</option>
+                    <option value="false" [selected]="privacyPost==false">Riêng tư</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="sort-order">Bài viết:</label>
+                <select class="form-select " id="sort-order" aria-label=" select example" [(ngModel)]="asc" name="asc"
+                    (change)="searchPosts()">
+                    <option value="false" [selected]="asc==false">Mới nhất</option>
+                    <option value="true" [selected]="asc==true">Cũ nhất</option>
+                </select>
+            </div>
+        </div>
+
+
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block" style="margin-top: 10px;" (click)="searchPosts()">Tìm
+        kiếm</button>
+
+
+    <div class="table-responsive">
+        <table class="table table-striped fixed-width">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Người dùng</th>
+                    <th scope="col">Ảnh</th>
+                    <th scope="col">Nội dung</th>
+                    <th scope="col">Ngày tạo</th>
+                    <th scope="col">Quyền</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Lưu</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let post of postList">
+                    <th scope="row">
+                        {{post.id}}
+                    </th>
+                    <td>
+                        <div class="container row">
+                            <div class="p-2">
+                                <img src="{{post.urlAvatar}}" class="rounded-circle" alt="image" width="50" height="50">
+                            </div>
+                            <div class="profile-name">
+                                <p>{{post.username}}</p>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div *ngIf="post.postImages && post.postImages.length>0">
+                            <div id="carouselExampleFade" class="carousel slide carousel-fade p-2 slide-image">
+                                <div class="carousel-inner ">
+                                    <div class="carousel-item active " *ngFor="let image of post.postImages">
+                                        <img src="{{image}}" class="d-block w-100"
+                                            style="max-height: 300px; width: auto;" alt="...">
+                                    </div>
+
+                                </div>
+                                <button *ngIf="post.postImages.length>1" class="carousel-control-prev" type="button"
+                                    data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button *ngIf="post.postImages.length>1" class="carousel-control-next" type="button"
+                                    data-bs-target="#carouselExampleFade" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="content">
+                        <div class="scroll-container p-2">
+                            <ng-container *ngFor="let line of post.content.split('\n'); index as i">
+                                <p>{{ line }}</p>
+                            </ng-container>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="posted-time">
+                            <p>{{post.createdTime}}</p>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="privacy" style="margin-top: 5px;">
+                            <div *ngIf="post.postPrivacyStatus=='public'">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-people-fill" viewBox="0 0 16 16">
+                                    <path
+                                        d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
+                                </svg>
+                            </div>
+                            <div *ngIf="post.postPrivacyStatus=='private'">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-file-lock2" viewBox="0 0 16 16">
+                                    <path
+                                        d="M8 5a1 1 0 0 1 1 1v1H7V6a1 1 0 0 1 1-1m2 2.076V6a2 2 0 1 0-4 0v1.076c-.54.166-1 .597-1 1.224v2.4c0 .816.781 1.3 1.5 1.3h3c.719 0 1.5-.484 1.5-1.3V8.3c0-.627-.46-1.058-1-1.224" />
+                                    <path
+                                        d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1" />
+                                </svg>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <select class="form-select form-select-sm" [(ngModel)]="post.isLocked" name="user-status"
+                            aria-label=".form-select-sm example">
+                            <option [ngValue]="false" [selected]="post.isLocked==false">Hoạt động</option>
+                            <option [ngValue]="true" [selected]="post.isLocked==true">Khóa</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-success"
+                            (click)="saveChange(post.id,post.isLocked)">Lưu</button>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="100%">
+                        <mat-paginator [length]="totalElements" 
+                        [pageSize]="pageSize" 
+                        [pageSizeOptions]="[5, 10, 25, 100]"
+                        (page)="onPageChange($event)"
+                            aria-label="Select page">
+                        </mat-paginator>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+
+
+</div>

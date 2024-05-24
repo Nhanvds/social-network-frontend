@@ -1,0 +1,148 @@
+<div class="container mt-5 input-search">
+    <h3 style=" text-align: center; margin-bottom: 20px;">Quản lý người dùng</h3>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="general-keyword">Từ khóa chung:</label>
+                <input type="text" class="form-control" id="general-keyword" [(ngModel)]="commonSearch"
+                    name="general-keyword">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="date-from">Ngày tạo từ ngày:</label>
+                <input type="date" class="form-control" id="date-from" [(ngModel)]="createdTimeFrom" name="date-from">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="date-to">Ngày tạo đến ngày:</label>
+                <input type="date" class="form-control" id="date-to" [(ngModel)]="createdTimeTo" name="date-to">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="status">Trạng thái người dùng:</label>
+                <select class="form-control" id="status" [(ngModel)]="isLocked" name="status">
+                    <option value="false" [selected]="isLocked==false">Hoạt động</option>
+                    <option value="true" [selected]="isLocked==true">Bị khóa</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="userId">ID người dùng:</label>
+                <input type="text" class="form-control" [(ngModel)]="userId" id="userId" name="userId">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="text" class="form-control" [(ngModel)]="email" id="email" name="email">
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <label for="role">Quyền</label>
+            <select class="form-select " [(ngModel)]="role" id="role" aria-label=".form-select-sm example">
+                <option value="USER" [selected]="role=='USER'">User</option>
+                <option value="ADMIN" [selected]="role=='ADMIN'">Admin</option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label for="sort-property">Sắp xếp theo</label>
+            <select class="form-select " [(ngModel)]="sortProperty" id="sort-property"
+                aria-label=".form-select-sm example">
+                <option value="id" [selected]="sortProperty=='id'">Id</option>
+                <option value="userName" [selected]="sortProperty=='userName'">Tên người dùng</option>
+                <option value="createdAt" [selected]="sortProperty=='createdAt'">Thời gian tạo</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="sort-order">Tăng/Giảm</label>
+            <select class="form-select " [(ngModel)]="sortOrder" id="sort-order" aria-label=".form-select-sm example">
+                <option value="true" [selected]="sortOrder==true">Tăng dần</option>
+                <option value="false" [selected]="sortOrder==false">Giảm dần</option>
+            </select>
+        </div>
+
+    </div>
+    <button type="submit" class="btn btn-primary btn-block " style="margin-top: 10px;" (click)="searchUsers()">
+        Tìm kiếm
+    </button>
+    <div class="table-responsive">
+        <table class="table table-striped fixed-width">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Tên người dùng</th>
+                    <th scope="col">Ảnh đại diện</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Ngày tạo</th>
+                    <th scope="col">Quyền</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Lưu</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of listUsers">
+                    <th scope="row">{{user.id}}</th>
+                    <td>{{user.username}}</td>
+                    <td>
+                        <img src={{user.urlAvatar}} class="img-thumbnail" alt="..."
+                            style="max-width: 100px; width: auto;">
+                    </td>
+                    <td>{{user.email}}</td>
+                    <td>{{user.createdAt}}</td>
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" [checked]="hasRole(user, 'USER')"
+                                (change)="toggleRole(user, {id: 2, roleName: 'USER'})" id="flexCheckUser{{user.id}}">
+                            <label class="form-check-label" for="flexCheckUser{{user.id}}">
+                                User
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" [checked]="hasRole(user, 'ADMIN')"
+                                (change)="toggleRole(user, {id: 1, roleName: 'ADMIN'})" id="flexCheckAdmin{{user.id}}">
+                            <label class="form-check-label" for="flexCheckAdmin{{user.id}}">
+                                Admin
+                            </label>
+                        </div>
+                    </td>
+
+                    <td>
+                        <select class="form-select form-select-sm" [(ngModel)]="user.isLocked" name="user-status"
+                            aria-label=".form-select-sm example">
+                            <option [ngValue]="false" [selected]="user.isLocked==false">Hoạt động</option>
+                            <option [ngValue]="true" [selected]="user.isLocked==true">Bị khóa</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-success" (click)="saveChange(user)">Lưu</button>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="100%">
+                        <mat-paginator [length]="totalElements" 
+                        [pageSize]="pageSize" 
+                        [pageSizeOptions]="[2, 5, 10, 20]"
+                        (page)="onPageChange($event)"
+                            aria-label="Select page">
+                        </mat-paginator>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+
+</div>

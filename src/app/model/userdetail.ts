@@ -12,7 +12,7 @@ export interface UserDetail{
 
     isLocked:boolean,
 
-    lastLogin:Date,
+    createdAt:Date,
 
     roles:Role[]
 }

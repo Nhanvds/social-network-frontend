@@ -1,0 +1,29 @@
+.table-responsive {
+    overflow-x: auto;
+    max-height: 100vh; /* Chiều cao cố định của bảng */
+    overflow-y: auto; /* Thêm thanh cuộn dọc */
+}
+.fixed-width {
+    // table-layout: fixed;
+    width: 120%;
+}
+.fixed-width th, .fixed-width td {
+
+    word-wrap: break-word;
+}
+.table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: white; /* Màu nền của tiêu đề cột */
+  }
+.scroll-container {
+    max-height: 200px; /* Chiều cao tối đa của khung cuộn */
+    max-width: 300px;
+    overflow-x: auto;
+    overflow-y: auto; /* Bật tính năng cuộn dọc khi nội dung vượt quá chiều cao */
+    padding: 10px; /* Khoảng cách bên trong */
+    margin: 10px; /* Khoảng cách bên ngoài */
+    border-radius: 10px; /* Bo góc */
+    border: 1px solid #ddd; /* Viền khung */
+}

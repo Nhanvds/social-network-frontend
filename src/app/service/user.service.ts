@@ -3,18 +3,24 @@ import { environment } from "src/environments/environment";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {HttpUtilService} from "./http.util.service"
 import { UserDTO } from "../dto/user.dto";
-import { Observable } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import { UserDetail } from "../model/userdetail";
+import { UserFilter } from "../dto/userfilter.dto";
+import { PageFilter } from "../dto/pagefilter.dto";
 
 @Injectable({
     providedIn:'root'
 })
 export class UserService{
+    private loggedIn = new BehaviorSubject<boolean>(false);
     private apiLogin = `${environment.apiBaseUrl}/users/login`;
     private apiRegister = `${environment.apiBaseUrl}/users/register`;
     private apiSendMail = `${environment.apiBaseUrl}/users/send`;
     private apiVerify = `${environment.apiBaseUrl}/users/verification`;
     private apiUserDetail=`${environment.apiBaseUrl}/users`;
+    private apiSearchUser = `${environment.apiBaseUrl}/users/search`;
+    private apiGetAll =`${environment.apiBaseUrl}/users/list`;
+    private apiUpdateUser =`${environment.apiBaseUrl}/users`;
 
     private apiConfig = {
         headers: this.httpUtilService.createHeader()
@@ -26,9 +32,12 @@ export class UserService{
     ){ }
 
     getUserDetail():Observable<any>{
-
         return this.http.get(this.apiUserDetail);
     }
+    getInfoUser(userId:number):Observable<any>{
+        return this.http.get(`${this.apiUserDetail}/${userId}/detail`,this.apiConfig);
+    }
+   
     saveUserDetailToLocalStorage(userDetail?:UserDetail){
         try{
             if(userDetail==null|| !userDetail){
@@ -59,6 +68,37 @@ export class UserService{
         .set('id',userId);
         return this.http.post(this.apiVerify,null,{params:params})
     }
+    getAllUsers(pageNumber:number, pageLimit:number ,commonSearch:string,asc:boolean,sortProperty:string)
+    :Observable<any>{
+        const params = new HttpParams()
+        .set('page', pageNumber)
+        .set('limit', pageLimit)
+        .set('common', commonSearch)
+        .set('asc', asc)
+        .set('sortProperty',sortProperty);
+        return this.http.get(this.apiGetAll,{
+            params: params,
+            headers: this.apiConfig.headers
+        });
+
+    }
+    searchUser(pageFilter:PageFilter<UserFilter>):Observable<any>{
+        return this.http.post(this.apiSearchUser,pageFilter,this.apiConfig);
+    }
+
+    updateUser(userDetail:UserDetail):Observable<any>{
+        return this.http.put(this.apiUpdateUser,userDetail,this.apiConfig);
+    }
     
+    setLogin(): void {
+        this.loggedIn.next(true);
+      }
+    
+      setLogout(): void {
+        this.loggedIn.next(false);
+      }
+      get isLoggedIn(): Observable<boolean> {
+        return this.loggedIn.asObservable();
+      }
 
 }
