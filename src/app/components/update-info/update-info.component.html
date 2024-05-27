@@ -1,0 +1,55 @@
+<div class="container">
+    <div *ngIf="step === 1" class="form-container">
+      <h2>Bước 1: Nhập mật khẩu để xác thực</h2>
+      <form (ngSubmit)="verifyPassword()">
+        <p *ngIf="checkPasswordMessage">{{checkPasswordMessage}}</p>
+        <div class="form-group">
+          <label for="password">Mật khẩu:</label>
+          <input type="password" id="password" [(ngModel)]="password" name="password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Xác thực</button>
+      </form>
+    </div>
+  
+    <div *ngIf="step === 2" class="form-container">
+      <h2>Bước 2: Cập nhật thông tin tài khoản</h2>
+      <p *ngIf="errorMessage">{{errorMessage}}</p>
+      <form (ngSubmit)="updateAccount()">
+        <div class="form-group">
+          <label for="accountName">Tên tài khoản:</label>
+          <input type="text" id="accountName" [(ngModel)]="username" name="username" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="description">Miêu tả:</label>
+          <textarea id="description" [(ngModel)]="description" name="description" class="form-control" required></textarea>
+        </div>
+        <div class="form-group row">
+          <label for="inputPassword" class="col-sm-2 col-form-label">Mật khẩu</label>
+          <div class="col-sm-10">
+            <input type="password" [(ngModel)]="newPassword" name="newPassword" class="form-control" id="inputPassword">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="inputConfirmPassword" class="col-sm-2 col-form-label">Nhập lại mật khẩu</label>
+          <div class="col-sm-10">
+            <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" class="form-control" id="inputConfirmPassword">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="formFile" class="form-label">Ảnh đại diện</label>
+          <input class="form-control" (change)="onImageSelected($event)" type="file" id="formFile" accept="image/*">
+          <div class="d-flex flex-row mt-2">
+            <button class="btn btn-primary me-2" [disabled]="isUploadFile" (click)="uploadFile()">Tải ảnh lên</button>
+            <div *ngIf="isUploadFile">
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          </div>
+          <img [src]="urlAvatar" *ngIf="urlAvatar" class="mt-3 img-thumbnail" alt="Ảnh đại diện">
+        </div>
+        <button type="submit" class="btn btn-success">Cập nhật</button>
+      </form>
+    </div>
+  </div>
+  

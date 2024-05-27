@@ -1,8 +1,8 @@
 <div class="container ">
-    <div class=" " style="padding: 10px; margin: 10px; border-radius: 10px;">
+    <div class=" " style="padding: 10px;  border-radius: 10px;">
         <h2>Tìm kiếm bài viết </h2>
         <select class="form-select form-select-sm" style="width: 30%;" aria-label="Small select example"
-        [(ngModel)]="asc" name="asc" (change)="getPostsInHome()">
+            [(ngModel)]="asc" name="asc" (change)="getPostsInHome()">
             <option value="false" [selected]="asc==false">Mới nhất</option>
             <option value="true" [selected]="asc==true">Cũ nhất</option>
         </select>
@@ -14,30 +14,37 @@
         </div>
         <form class="d-flex mt-3 " role="search">
 
-            <input class="form-control me-2 " type="search" placeholder="Tìm kiếm" aria-label="Search"
-            [(ngModel)]="commonSearch" name="inputSearch">
+            <!-- <input class="form-control me-2 " type="search" placeholder="Tìm kiếm" aria-label="Search"
+                [(ngModel)]="commonSearch" name="inputSearch"> -->
+                <textarea class="form-control me-2 " type="search" placeholder="Tìm kiếm" aria-label="Search"
+                [(ngModel)]="commonSearch" name="inputSearch">
+                    
+                </textarea>
             <button class="btn btn-outline-success" (click)="getPostsInHome()">Tìm </button>
         </form>
     </div>
     <div class="container col-auto create-post d-flex justify-content-center align-items-center">
-        <button type="button" (click)="openFormCreatePost()" class="btn btn-outline-light btn-create-post"
-            data-bs-toggle="modal" data-bs-target="#exampleModal">
-            Cập nhật trạng thái ...
+        <button type="button" (click)="openFormCreatePost()" class="btn  btn-create-post" data-bs-toggle="modal"
+            data-bs-target="#modalCreatePost">
+            Tạo bài viết mới ...
         </button>
         <!-- Modal -->
-        <div class="modal fade " id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade " aria-hidden="true" id="modalCreatePost" tabindex="-1"
+            aria-labelledby="exampleModalLabel">
             <div class="modal-dialog ">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Tạo bài viết mới</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h3 class="modal-title" id="exampleModalLabel">Tạo bài viết mới</h3>
+                        <button type="button" class="btn-close" id="close-modal-create-post" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                     </div>
                     <div class="modal-body d-flex flex-column  ">
                         <div>
                             <label *ngIf="postPrivacies" class="form-label">Những ai sẽ nhìn thấy bài viết này</label>
                             <select class="form-select" aria-label="Default select example" [(ngModel)]="postPrivacyId">
-                                <option *ngFor="let pp of postPrivacies;index as i" value={{pp.id}} [value]="pp.id">
-                                    {{pp.name=="public"?"Bạn bè":"Chỉ mình tôi"}}
+                                <option *ngFor="let pp of postPrivacies;index as i" [value]="pp.id"
+                                    [selected]="pp.id==2">
+                                    {{pp.name=="public"?"Mọi người":"Chỉ mình tôi"}}
                                 </option>
                             </select>
 
@@ -69,18 +76,22 @@
                         <div *ngIf="urlImages.length>0" id="image-uploaded" class="carousel slide "
                             data-bs-ride="carousel">
                             <div class="carousel-inner">
-                                <div class="carousel-item active " *ngFor="let url of urlImages">
-                                    <img src={{url}} class="d-block w-100" alt="...">
+                                <div class="carousel-item active " *ngFor="let url of urlImages;let i = index"
+                                    [ngClass]="{'active':i==0}">
+                                    <img src={{url}} style="height: 400px; width: auto;" class="d-block w-100"
+                                        alt="...">
                                 </div>
                             </div>
                             <button class="carousel-control-prev" type="button" data-bs-target="#image-uploaded"
-                                data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                 data-bs-slide="prev">
+                                <span style="background-color: black;" class="carousel-control-prev-icon"
+                                    aria-hidden="true"></span>
                                 <span class="visually-hidden">Previous</span>
                             </button>
                             <button class="carousel-control-next" type="button" data-bs-target="#image-uploaded"
                                 data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span style="background-color: black;" class="carousel-control-next-icon"
+                                    aria-hidden="true"></span>
                                 <span class="visually-hidden">Next</span>
                             </button>
                         </div>
@@ -110,7 +121,9 @@
                     <div class="p-2">
                         <div class="profile-details ">
                             <div class="profile-name">
-                                <a href="/manchesterunited/">{{post.username}}</a>
+                                <p [routerLink]="['posts/',post.userId]" style="cursor: pointer;">
+                                    {{post.username}}
+                                </p>
                             </div>
 
                             <div class="posted-time">
@@ -155,8 +168,17 @@
                         <!-- Dropdown menu -->
 
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Chỉnh sửa bài viết</a></li>
-                            <li><a class="dropdown-item" href="#">Xóa bài viết</a></li>
+                            <li>
+                                <button type="button" (click)="openFormCreatePost()" class="btn  btn-edit-post"
+                                    data-bs-toggle="modal" [attr.data-bs-target]="'#'+'modal-edit-post' + post.id">
+                                    Chỉnh sửa bài viết
+                                </button>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" style="cursor: pointer;"
+                                    (click)="deletePost(post.id,false)">Xóa bài viết
+                                </a>
+                            </li>
                         </ul>
 
 
@@ -167,35 +189,38 @@
             </div>
             <!-- <div id="carouselExampleFade" và data-bs-target="#carouselExampleFade" phải trùng nhau -->
             <div *ngIf="post.postImages && post.postImages.length>0">
-                <div id="carouselExampleFade" class="carousel slide carousel-fade p-2 slide-image">
+                <div id="carouselExampleFade{{post.id}}" class="carousel slide ">
                     <div class="carousel-inner ">
-                        <div class="carousel-item active " *ngFor="let image of post.postImages">
-                            <img src="{{image}}" class="d-block w-100" style="max-height: 400px; width: auto;"
-                                alt="...">
+                        <div class="carousel-item" *ngFor="let image of post.postImages;let i = index"
+                            [ngClass]="{'active':i==0}">
+                            <img src="{{image}}" class="d-block w-100" style="height: 400px; width: auto;" alt="...">
                         </div>
 
                     </div>
                     <button *ngIf="post.postImages.length>1" class="carousel-control-prev" type="button"
-                        data-bs-target="#carouselExampleFade" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        [attr.data-bs-target]="'#carouselExampleFade'+post.id" data-bs-slide="prev">
+                        <span style="background-color: black;" class="carousel-control-prev-icon"
+                            aria-hidden="true"></span>
                         <span class="visually-hidden">Previous</span>
                     </button>
                     <button *ngIf="post.postImages.length>1" class="carousel-control-next" type="button"
-                        data-bs-target="#carouselExampleFade" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        [attr.data-bs-target]="'#carouselExampleFade'+post.id" data-bs-slide="next">
+                        <span style="background-color: black;" class="carousel-control-next-icon"
+                            aria-hidden="true"></span>
                         <span class="visually-hidden">Next</span>
                     </button>
                 </div>
             </div>
 
 
+
             <div class="p-2">
 
-                <ng-container *ngFor="let line of post.content.split('\n');index as i">
+                <ng-container *ngFor="let line of post.content.split('\n');index as i" >
                     <p *ngIf="i<10">{{ line }}</p>
                 </ng-container>
                 <a *ngIf="post.content.split('\n').length>10" style="cursor: pointer;" data-bs-toggle="modal"
-                    [attr.data-bs-target]="'#' + post.id" (click)="getComments(post.id)">...xem thêm</a>
+                    [attr.data-bs-target]="'#'+'modal-post-detail' + post.id" (click)="getComments(post.id)">...xem thêm</a>
             </div>
 
             <div class="p-2 row">
@@ -271,20 +296,59 @@
 
                 </div>
                 <div class="btn-group col" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        [attr.data-bs-target]="'#' + post.id" (click)="getComments(post.id)">
+                    <button type="button" class="btn border border-1" data-bs-toggle="modal"
+                        [attr.data-bs-target]="'#'+'modal-post-detail' + post.id" (click)="getComments(post.id)">
                         Bình luận
                     </button>
+                    <!-- Model Edit Post -->
+                    <div class="modal fade " aria-hidden="true" id='modal-edit-post{{post.id}}' tabindex="-1"
+                        aria-labelledby="exampleModalLabel">
+                        <div class="modal-dialog ">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Chỉnh sửa bài viết</h5>
+                                    <button type="button" class="btn-close" id='close-modal-edit-post{{post.id}}'
+                                        data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body d-flex flex-column  ">
+                                    <div>
+                                        <label *ngIf="postPrivacies" class="form-label">Những ai sẽ nhìn thấy bài viết
+                                            này</label>
+                                        <select class="form-select" aria-label="Default select example"
+                                            [(ngModel)]="post.postPrivacyStatus">
+                                            <option *ngFor="let pp of postPrivacies;index as i" [value]="pp.name"
+                                                [selected]="pp.name==post.postPrivacyStatus">
+                                                {{pp.name=="public"?"Bạn bè":"Chỉ mình tôi"}}
+                                            </option>
+                                        </select>
 
-                    <!-- Modal -->
-                    <div class="modal fade" id={{post.id}} tabindex="-1" aria-labelledby="exampleModalLabel"
-                        aria-hidden="true">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="formGroupExampleInput" class="form-label">Nội dung bài viết</label>
+                                        <textarea class="form-control" style="max-height: 90px;"
+                                            id="formGroupExampleInput" aria-label="With textarea" name="content"
+                                            [(ngModel)]="post.content">
+                                        </textarea>
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                    <button type="button" class="btn btn-primary" (click)="editPost(post)">Lưu</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal Post Detail-->
+                    <div class="modal fade" id="modal-post-detail{{post.id}}" tabindex="-1"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg modal-dialog-scrollable">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h3 class="modal-title" id="exampleModalLabel">Bài viết</h3>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                                        id='close-modal-detail-post{{post.id}}' aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body ">
                                     <div class="container d-flex flex-row">
@@ -296,7 +360,9 @@
                                         <div class="p-2">
                                             <div class="profile-details ">
                                                 <div class="profile-name">
-                                                    <a href="/manchesterunited/">{{post.username}}</a>
+                                                    <p [routerLink]="['posts/',post.userId]" style="cursor: pointer;">
+                                                        {{post.username}}
+                                                    </p>
                                                 </div>
 
                                                 <div class="posted-time">
@@ -319,8 +385,19 @@
                                             <!-- Dropdown menu -->
 
                                             <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="#">Chỉnh sửa bài viết</a></li>
-                                                <li><a class="dropdown-item" href="#">Xóa bài viết</a></li>
+                                                <li>
+                                                    <button type="button" (click)="openFormCreatePost()"
+                                                        class="btn  btn-edit-post" data-bs-toggle="modal"
+                                                        [attr.data-bs-target]="'#'+'modal-edit-post' + post.id">
+                                                        Chỉnh sửa bài viết
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" style="cursor: pointer;"
+                                                        (click)="deletePost(post.id,true)">
+                                                        Xóa bài viết
+                                                    </a>
+                                                </li>
                                             </ul>
 
 
@@ -329,23 +406,28 @@
 
                                     </div>
                                     <div *ngIf="post.postImages && post.postImages.length>0">
-                                        <div id="carouselExampleFade-postdetail"
-                                            class="carousel slide carousel-fade p-2 slide-image">
+                                        <div id="carousel-post-detail{{post.id}}" class="carousel slide ">
                                             <div class="carousel-inner ">
-                                                <div class="carousel-item active "
-                                                    *ngFor="let image of post.postImages">
-                                                    <img src="{{image}}" class="d-block w-100" alt="...">
+                                                <div class="carousel-item"
+                                                    *ngFor="let image of post.postImages;let i = index"
+                                                    [ngClass]="{'active':i==0}">
+                                                    <img src="{{image}}" class="d-block w-100"
+                                                        style="height: 400px; width: auto;" alt="...">
                                                 </div>
 
                                             </div>
-                                            <button class="carousel-control-prev" type="button"
-                                                data-bs-target="#carouselExampleFade-postdetail" data-bs-slide="prev">
-                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <button *ngIf="post.postImages.length>1" class="carousel-control-prev"
+                                                type="button" [attr.data-bs-target]="'#carousel-post-detail'+post.id"
+                                                data-bs-slide="prev">
+                                                <span style="background-color: black;"
+                                                    class="carousel-control-prev-icon" aria-hidden="true"></span>
                                                 <span class="visually-hidden">Previous</span>
                                             </button>
-                                            <button class="carousel-control-next" type="button"
-                                                data-bs-target="#carouselExampleFade-postdetail" data-bs-slide="next">
-                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <button *ngIf="post.postImages.length>1" class="carousel-control-next"
+                                                type="button" [attr.data-bs-target]="'#carousel-post-detail'+post.id"
+                                                data-bs-slide="next">
+                                                <span style="background-color: black;"
+                                                    class="carousel-control-next-icon" aria-hidden="true"></span>
                                                 <span class="visually-hidden">Next</span>
                                             </button>
                                         </div>
@@ -474,8 +556,9 @@
                                                     <div class="p-2">
                                                         <div class="profile-details ">
                                                             <div class="profile-name">
-                                                                <a
-                                                                    href="/manchesterunited/">{{comment.user.username}}</a>
+                                                                <p (click)="viewProfile(comment.user.id,post.id)" style="cursor: pointer;">
+                                                                    {{comment.user.username}}
+                                                                </p>
                                                             </div>
 
                                                             <div class="posted-time">
@@ -499,7 +582,8 @@
 
                                                         <ul class="dropdown-menu">
                                                             <li><a class="dropdown-item"
-                                                                    (click)="deleteComment(comment.id)">Xoá</a></li>
+                                                                    (click)="deleteComment(comment.id,post.id)">Xoá</a>
+                                                            </li>
                                                         </ul>
 
 
@@ -515,6 +599,10 @@
 
                                             </div>
                                         </div>
+                                        <div><mat-paginator [length]="totalComments" [pageSize]="pageSizeComment"
+                                                [showFirstLastButtons]=true (page)="onPageCommentChange($event,post.id)"
+                                                aria-label="Select page">
+                                            </mat-paginator></div>
 
                                     </div>
                                     <div class=" create-comment  ">
@@ -536,13 +624,10 @@
 
         </div>
 
-        
+
     </div>
     <div>
-        <mat-paginator
-            [length]="totalPosts" [pageSize]="pageSize" 
-            [showFirstLastButtons]=true
-            [pageSizeOptions]="[2, 5, 10]"
-            (page)="onPagePostChange($event)" aria-label="Select page">
+        <mat-paginator [length]="totalPosts" [pageSize]="pageSize" [showFirstLastButtons]=true
+            [pageSizeOptions]="[2, 5, 10]" (page)="onPagePostChange($event)" aria-label="Select page">
         </mat-paginator>
     </div>

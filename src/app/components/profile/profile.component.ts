@@ -1,5 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgToastService } from 'ng-angular-popup';
+import { NgConfirmService } from 'ng-confirm-box';
 import { CommentDto } from 'src/app/dto/comment.dto';
 import { PostDTO } from 'src/app/dto/post.dto';
 import { PostReactionDto } from 'src/app/dto/reaction.dto';
@@ -31,36 +34,43 @@ export class ProfileComponent implements OnInit{
   isUploadFile: boolean = false;
   isLoadPosts: boolean = false;
   postPrivacies: PostPrivacy[]=[];
-  postPrivacyId: number = 1;
+  postPrivacyId: number = 2;
   postDto?: PostDTO;
   content:string='';
   urlImages: string[]=[];
   selectedImages?: FileList;
   postsResponse: PostResponse[]=[];
-  //post
+
   userId:number=0;
+  //post
   hasLiked: boolean= false;
   pageNumber: number = 0;
-  pageSize: number = 20;
+  pageSize: number = 10;
   commonSearch: string = '';
-  asc: boolean = true;
+  asc: boolean = false;
+  totalPosts:number=0;
+
+
   //comment
   pageNumberComment:number=0;
-  pageSizeComment:number=15;
+  pageSizeComment:number=5;
   ascSortComments:boolean=false;
   loadComment:boolean=false;
   inputCreateComment:string="";
   listComments:CommentResponse[]=[];
+  totalComments:number=0;
 
 
 
   constructor(
     private postService: PostService,
     private commentService: CommentService,
-    private router: Router,
     private userSevice: UserService,
     private tokenService: TokenService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private confirmService: NgConfirmService,
+    private toastService: NgToastService,
+    private router:Router
   ) {
 
   }
@@ -78,6 +88,7 @@ export class ProfileComponent implements OnInit{
       next:(res:ApiResponse)=>{
         if(res.success){
           this.postsResponse= res.data.content;
+          this.totalPosts=res.data.totalElements;
         }else{
           alert(res.message)
         }
@@ -106,6 +117,14 @@ export class ProfileComponent implements OnInit{
           this.errorMessage = response.message;
           alert(this.errorMessage);
         }
+      },
+      error:(error)=>{
+        this.toastService.error(
+          {detail:"ERROR"
+            ,summary:error.message
+            ,duration:3000
+          }
+        );
       }
     })
   }
@@ -136,11 +155,11 @@ export class ProfileComponent implements OnInit{
     }
 
   }
-
+  
 
   createPost() {
     const postDto: PostDTO = {
-      content: this.content,
+      content: this.normalizeContent(this.content),
       postPrivacyStatusId: this.postPrivacyId,
       urlPostImages: this.urlImages
     }
@@ -148,10 +167,80 @@ export class ProfileComponent implements OnInit{
     this.postService.createPost(postDto).subscribe({
       next: (response: ApiResponse) => {
         if (response.success) {
-          alert(response.message);
+          this.getPostsByUserId();
+          this.toastService.success(
+            {detail:"SUCCESS"
+              ,summary:"Tạo bài viết thành công"
+              ,duration:3000
+            }
+          );
         } else {
-          this.errorMessage = response.message;
+          this.toastService.error(
+            {detail:"ERROR"
+              ,summary:response.message
+              ,duration:3000
+            }
+          );
         }
+      },
+      complete:()=>{
+        document.getElementById('close-modal-create-post')?.click();
+      }
+    })
+  }
+  deletePost(postId:number,detail:boolean){
+    if(detail==true){
+      document.getElementById('close-modal-detail-post'+postId)?.click();
+    }
+    this.confirmService.showConfirm("Xoá bài viết?",
+    ()=>{
+      this.postService.deletePost(postId).subscribe({
+        next:(res:ApiResponse)=>{
+          if(res.success){
+            this.getPostsByUserId();
+            this.toastService.success(
+              {detail:"SUCCESS"
+                ,summary:"Xoá bài viết thành công"
+                ,duration:3000
+              }
+            );
+          }else{
+            alert(res.message)
+          }
+        }
+      })
+    },
+    ()=>{})
+      
+    
+  }
+  viewProfile(userId:number,postId:number){
+    document.getElementById('close-modal-detail-post'+postId)?.click();
+    this.router.navigate(['posts/',userId]);
+  }
+  editPost(post:PostResponse){
+
+    const postDto:PostDTO={
+      content:this.normalizeContent(post.content),
+      postPrivacyName:post.postPrivacyStatus
+    }
+    this.postService.updatePost(post.id,postDto)
+    .subscribe({
+      next:(res:ApiResponse)=>{
+        if(res.success){
+          this.getPostsByUserId();
+          this.toastService.success(
+            {detail:"SUCCESS"
+              ,summary:"Cập nhật bài viết thành công"
+              ,duration:3000
+            }
+          );
+          
+        }
+      },
+      complete:()=>{
+        document.getElementById('close-modal-edit-post'+post.id)?.click();
+        
       }
     })
   }
@@ -277,12 +366,12 @@ export class ProfileComponent implements OnInit{
       }
     })
   }
-  deleteComment(commentId:number){
+  deleteComment(commentId:number,postId:number){
     this.commentService.deleteComment(commentId).subscribe({
       next:(response:ApiResponse)=>{
         if(response.success){
           this.inputCreateComment="";
-          this.listComments = this.listComments.filter(cmt=>cmt.id!=commentId);
+          this.getComments(postId);
         }else{
           alert(response.message);
         }
@@ -303,6 +392,7 @@ export class ProfileComponent implements OnInit{
       next:(response:ApiResponse)=>{
         if(response.success){
           this.listComments=response.data.content;
+          this.totalComments=response.data.totalElements;
         }else{
           alert(response.message);
         }
@@ -316,6 +406,20 @@ export class ProfileComponent implements OnInit{
 
     })
 
+  }
+  onPagePostChange(event: PageEvent){
+    this.pageNumber = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.getPostsByUserId();
+  }
+  onPageCommentChange(event: PageEvent,postId:number){
+    this.pageNumberComment = event.pageIndex;
+    this.pageSizeComment = event.pageSize;
+    this.getComments(postId);
+  }
+
+  normalizeContent(content:string):string {
+    return content.replace(/\s*\n\s*/g, '\n').trim();
   }
 
 }

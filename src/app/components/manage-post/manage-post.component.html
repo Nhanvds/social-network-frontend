@@ -4,8 +4,12 @@
         <div class="col-md-4">
             <div class="form-group">
                 <label for="general-keyword">Từ khóa chung:</label>
-                <input type="text" class="form-control" id="general-keyword" [(ngModel)]="commonSearch"
+                <!-- <input type="text" class="form-control" id="general-keyword" [(ngModel)]="commonSearch"
+                name="general-keyword"> -->
+                    <textarea type="text" class="form-control" id="general-keyword" [(ngModel)]="commonSearch"
                     name="general-keyword">
+                    
+                </textarea>
             </div>
         </div>
         <div class="col-md-4">
@@ -17,7 +21,9 @@
         <div class="col-md-4">
             <div class="form-group">
                 <label for="content-post">Nội dung bài viết:</label>
-                <input type="text" class="form-control" id="content-post" [(ngModel)]="content" name="content-post">
+                <!-- <input type="text" class="form-control" id="content-post" [(ngModel)]="content" name="content-post"> -->
+                <textarea type="text" class="form-control" id="content-post" [(ngModel)]="content" name="content-post">
+                </textarea>
             </div>
         </div>
     </div>
@@ -48,7 +54,7 @@
         <div class="col-md-4">
             <div class="form-group">
                 <label for="userId">ID người dùng:</label>
-                <input type="text" class="form-control" id="userId" name="userId">
+                <input type="text" [(ngModel)]="userId" class="form-control" id="userId" name="userId">
             </div>
         </div>
         <div class="col-md-4">
@@ -85,7 +91,7 @@
                 <tr>
                     <th scope="col">Id</th>
                     <th scope="col">Người dùng</th>
-                    <th scope="col">Ảnh</th>
+                    <th class="post-img" scope="col">Ảnh</th>
                     <th scope="col">Nội dung</th>
                     <th scope="col">Ngày tạo</th>
                     <th scope="col">Quyền</th>
@@ -109,23 +115,23 @@
                         </div>
                     </td>
 
-                    <td>
+                    <td class="post-img">
                         <div *ngIf="post.postImages && post.postImages.length>0">
-                            <div id="carouselExampleFade" class="carousel slide carousel-fade p-2 slide-image">
+                            <div id="carousel{{post.id}}" class="carousel slide carousel-fade p-2 slide-image">
                                 <div class="carousel-inner ">
-                                    <div class="carousel-item active " *ngFor="let image of post.postImages">
+                                    <div class="carousel-item active " *ngFor="let image of post.postImages;let i = index"[ngClass]="{'active':i==0}">
                                         <img src="{{image}}" class="d-block w-100"
-                                            style="max-height: 300px; width: auto;" alt="...">
+                                            style="height: 100px; width: auto;" alt="...">
                                     </div>
 
                                 </div>
                                 <button *ngIf="post.postImages.length>1" class="carousel-control-prev" type="button"
-                                    data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+                                    [attr.data-bs-target]="'#carousel'+post.id" data-bs-slide="prev">
                                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                     <span class="visually-hidden">Previous</span>
                                 </button>
                                 <button *ngIf="post.postImages.length>1" class="carousel-control-next" type="button"
-                                    data-bs-target="#carouselExampleFade" data-bs-slide="next">
+                                    [attr.data-bs-target]="'#carousel'+post.id" data-bs-slide="next">
                                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                     <span class="visually-hidden">Next</span>
                                 </button>
@@ -183,6 +189,7 @@
                     <td colspan="100%">
                         <mat-paginator [length]="totalElements" 
                         [pageSize]="pageSize" 
+                        [showFirstLastButtons]=true
                         [pageSizeOptions]="[5, 10, 25, 100]"
                         (page)="onPageChange($event)"
                             aria-label="Select page">

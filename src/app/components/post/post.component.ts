@@ -1,6 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit,ElementRef,Renderer2 } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Router } from '@angular/router';
+import { NgToastService } from 'ng-angular-popup';
+import { NgConfirmService } from 'ng-confirm-box';
 import { CommentDto } from 'src/app/dto/comment.dto';
 import { PostDTO } from 'src/app/dto/post.dto';
 import { PostReactionDto } from 'src/app/dto/reaction.dto';
@@ -11,7 +13,6 @@ import { PostResponse } from 'src/app/response/post.response';
 import { CommentService } from 'src/app/service/comment.service';
 import { PostService } from 'src/app/service/post.service';
 import { TokenService } from 'src/app/service/token.service';
-import { UserService } from 'src/app/service/user.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -20,14 +21,16 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./post.component.scss']
 })
 export class PostComponent implements OnInit {
-  @Input() page?: string;
   urlAvatarDefault=environment.urlAvatarDefault;
   myUserId:number=0;
   errorMessage: string = '';
   isUploadFile: boolean = false;
   isLoadPosts: boolean = false;
+  
+
+
   postPrivacies: PostPrivacy[]=[];
-  postPrivacyId: number = 1;
+  postPrivacyId: number = 2;
   postDto?: PostDTO;
   content:string='';
   urlImages: string[]=[];
@@ -47,7 +50,7 @@ export class PostComponent implements OnInit {
 
   //comment
   pageNumberComment:number=0;
-  pageSizeComment:number=15;
+  pageSizeComment:number=5;
   ascSortComments:boolean=false;
   loadComment:boolean=false;
   inputCreateComment:string="";
@@ -60,11 +63,12 @@ export class PostComponent implements OnInit {
   constructor(
     private postService: PostService,
     private commentService: CommentService,
-    private router: Router,
-    private userSevice: UserService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private confirmService: NgConfirmService,
+    private toastService: NgToastService,
+    private router:Router
   ) {
-
+   
   }
   ngOnInit(): void {
     const userId = this.tokenService.getUserId();
@@ -78,7 +82,7 @@ export class PostComponent implements OnInit {
         next:(res:ApiResponse)=>{
           if(res.success){
             this.postsResponse = res.data.content;
-            this.totalPosts = res.data.totalElements
+            this.totalPosts = res.data.totalElements;
           console.log(this.postsResponse);
           }else{
             alert(res.data.content); 
@@ -131,11 +135,11 @@ export class PostComponent implements OnInit {
     }
 
   }
-
+  
 
   createPost() {
     const postDto: PostDTO = {
-      content: this.content,
+      content: this.normalizeContent(this.content),
       postPrivacyStatusId: this.postPrivacyId,
       urlPostImages: this.urlImages
     }
@@ -143,14 +147,78 @@ export class PostComponent implements OnInit {
     this.postService.createPost(postDto).subscribe({
       next: (response: ApiResponse) => {
         if (response.success) {
-          alert(response.message);
+          this.getPostsInHome();
+          this.toastService.success(
+            {detail:"SUCCESS"
+              ,summary:"Tạo bài viết thành công"
+              ,duration:3000
+            }
+          );
         } else {
           this.errorMessage = response.message;
         }
+      },
+      complete:()=>{
+        document.getElementById('close-modal-create-post')?.click();
       }
     })
   }
+  deletePost(postId:number,detail:boolean){
+    if(detail==true){
+      document.getElementById('close-modal-detail-post'+postId)?.click();
+    }
+    this.confirmService.showConfirm("Xoá bài viết?",
+    ()=>{
+      this.postService.deletePost(postId).subscribe({
+        next:(res:ApiResponse)=>{
+          if(res.success){
+            this.getPostsInHome();
+            this.toastService.success(
+              {detail:"SUCCESS"
+                ,summary:"Xoá bài viết thành công"
+                ,duration:3000
+              }
+            );
+          }else{
+            alert(res.message)
+          }
+        }
+      })
+    },
+    ()=>{})
+      
+    
+  }
+  viewProfile(userId:number,postId:number){
+    document.getElementById('close-modal-detail-post'+postId)?.click();
+    this.router.navigate(['posts/',userId]);
+  }
+  editPost(post:PostResponse){
 
+    const postDto:PostDTO={
+      content:this.normalizeContent(post.content),
+      postPrivacyName:post.postPrivacyStatus
+    }
+    this.postService.updatePost(post.id,postDto)
+    .subscribe({
+      next:(res:ApiResponse)=>{
+        if(res.success){
+          this.getPostsInHome();
+          this.toastService.success(
+            {detail:"SUCCESS"
+              ,summary:"Cập nhật bài viết thành công"
+              ,duration:3000
+            }
+          );
+          
+        }
+      },
+      complete:()=>{
+        document.getElementById('close-modal-edit-post'+post.id)?.click();
+        
+      }
+    })
+  }
   like(postId:number,hasLiked:boolean,hasDisLiked:boolean){
     
     let reactDto:PostReactionDto= {
@@ -264,20 +332,19 @@ export class PostComponent implements OnInit {
       next:(response:ApiResponse)=>{
         if(response.success){
           this.inputCreateComment='';
-          let createdComment= response.data;
-          this.listComments?.push(createdComment);
+          this.getComments(postId);
         }else{
           alert(response.message)
         }
       }
     })
   }
-  deleteComment(commentId:number){
+  deleteComment(commentId:number,postId:number){
     this.commentService.deleteComment(commentId).subscribe({
       next:(response:ApiResponse)=>{
         if(response.success){
           this.inputCreateComment="";
-          this.listComments = this.listComments.filter(cmt=>cmt.id!=commentId);
+          this.getComments(postId);
         }else{
           alert(response.message);
         }
@@ -298,6 +365,7 @@ export class PostComponent implements OnInit {
       next:(response:ApiResponse)=>{
         if(response.success){
           this.listComments=response.data.content;
+          this.totalComments = response.data.totalElements;
         }else{
           alert(response.message);
         }
@@ -317,8 +385,15 @@ export class PostComponent implements OnInit {
     this.pageSize = event.pageSize;
     this.getPostsInHome();
   }
+  onPageCommentChange(event: PageEvent,postId:number){
+    this.pageNumberComment = event.pageIndex;
+    this.pageSizeComment = event.pageSize;
+    this.getComments(postId);
+  }
 
-
+  normalizeContent(content:string):string {
+    return content.replace(/\s*\n\s*/g, '\n').trim();
+  }
 
 }
 

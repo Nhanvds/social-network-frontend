@@ -14,11 +14,14 @@ import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
 import { PostComponent } from './components/post/post.component';
 import { UserComponent } from './components/user/user.component';
+import { UpdateInfoComponent } from './components/update-info/update-info.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { ManagePostComponent } from './components/manage-post/manage-post.component';
 import { ManageUserComponent } from './components/manage-user/manage-user.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { NgConfirmModule } from 'ng-confirm-box';
+import { NgToastModule } from 'ng-angular-popup';
 
 @NgModule({
   declarations: [
@@ -33,7 +36,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     PostComponent,
     ManagePostComponent,
     ManageUserComponent,
-   
+    UpdateInfoComponent
+    
   ],
   imports: [
     BrowserModule,
@@ -42,7 +46,10 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule ,
-    MatPaginatorModule
+    MatPaginatorModule,
+    NgConfirmModule,
+    NgToastModule,
+    
   ],
   providers: [
     {

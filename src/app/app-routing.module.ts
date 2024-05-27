@@ -11,8 +11,15 @@ import { UserComponent } from './components/user/user.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { ManagePostComponent } from './components/manage-post/manage-post.component';
 import { ManageUserComponent } from './components/manage-user/manage-user.component';
+import { UpdateInfoComponent } from './components/update-info/update-info.component';
+import { authAdminGuardFn } from './guards/auth-admin.guard';
 
 const routes: Routes = [
+  // {
+  //   path:'/login',
+  //   component:
+  // }
+  // ,
   {
     path:'',
     component: UserComponent,
@@ -21,16 +28,18 @@ const routes: Routes = [
       {path:'posts/:userId',component:ProfileComponent,canActivate:[authGuardFn]},
       {path:'login',component:LoginComponent}, 
       {path:'register',component:RegisterComponent},
+      {path:'update-info',component:UpdateInfoComponent,canActivate:[authGuardFn]},
     ]
 
   }
   ,
   {
     path: 'admin',
-    component: AdminComponent,
+    component: AdminComponent,canActivate:[authAdminGuardFn],
     children:[
       {path:'post',component:ManagePostComponent},
       {path:'user',component:ManageUserComponent},
+      {path:'update-info',component:UpdateInfoComponent},
     ]
     
     

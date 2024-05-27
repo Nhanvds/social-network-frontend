@@ -5,12 +5,13 @@
 }
 .fixed-width {
     // table-layout: fixed;
-    width: 120%;
+    width: 150%;
 }
 .fixed-width th, .fixed-width td {
-
+    width: 12.5%;
     word-wrap: break-word;
 }
+
 .table thead {
     position: sticky;
     top: 0;

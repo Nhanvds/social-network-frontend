@@ -1,6 +1,7 @@
 
 export interface PostDTO{
     content:string,
-    postPrivacyStatusId:number,
-    urlPostImages:string[]|undefined
+    postPrivacyStatusId?:number,
+    postPrivacyName?:string,
+    urlPostImages?:string[]|undefined
 }

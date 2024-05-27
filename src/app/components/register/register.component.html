@@ -1,54 +1,66 @@
-
 <div class="container d-flex flex-column ">
-    <h1>Đăng Kí</h1>
-    <p *ngIf="errorMessage">{{errorMessage}}</p>
-<form [ngClass]="{'hidden-element':isRegister}">
+  <h1>Đăng Kí</h1>
+  <p class="text-danger" *ngIf="errorMessage">{{errorMessage}}</p>
+  <form [ngClass]="{'hidden-element':isRegister}" #registerForm="ngForm">
     <!-- Email input -->
     <div class="form-outline mb-4">
-        <label class="form-label" for="email" >Email</label>
-      <input type="email" id="email"  [(ngModel)]="email" name="email" class="form-control" />
-      
+      <label class="form-label" for="email">Email</label>
+      <input type="email" id="email" [(ngModel)]="email" name="email" class="form-control" required
+        (focus)="registerForm.form.markAsTouched()" />
+
     </div>
 
     <div class="form-outline mb-4">
-        <label class="form-label" for="username"
-        >Usename</label>
-      <input type="text" id="username" [(ngModel)]="username" name="username" class="form-control" />
+      <label class="form-label" for="username">Tên đăng nhập</label>
+      <input type="text" id="username" [(ngModel)]="username" name="username" class="form-control" required
+        (focus)="registerForm.form.markAsTouched()" />
+      <p class="text-danger" *ngIf="username.length < 5 
+                        && registerForm.form.touched">Tên đăng nhập phải có ít nhất 5 ký tự</p>
     </div>
-  
+
     <!-- Password input -->
     <div class="form-outline mb-4">
-        <label class="form-label" for="password"
-         >Password</label>
+      <label class="form-label" for="password">Mật khẩu</label>
       <input type="password" id="password" [(ngModel)]="password" name="password" class="form-control" />
-     
+      <p class="text-danger" *ngIf="password.length < 6 && registerForm.form.touched">
+        Mật khẩu phải có ít nhất 6 ký tự
+      </p>
     </div>
     <div class="form-outline mb-4">
-      <label class="form-label" for="confirmPassword"
-       >Confirm Password</label>
-    <input type="password" id="confirmPassword" [(ngModel)]="confirmPassword" name="confirmPassword" class="form-control" />
-   
-  </div>
-    <button type="button" class="btn btn-primary btn-block mb-4" (click)="register()">Register</button>
+      <label class="form-label" for="confirmPassword">Xác thực mật khẩu</label>
+      <input type="password" id="confirmPassword" [(ngModel)]="confirmPassword" name="confirmPassword"
+        class="form-control" (input)="registerForm.form.markAsTouched(); checkPasswordsMatch()" />
+      <p class="text-danger" *ngIf="confirmPassword.length < 6 && registerForm.form.touched">
+        Mật khẩu phải có ít nhất 6 ký tự
+      </p>
+      <p class="text-danger" *ngIf="registerForm.controls['confirmPassword']?.hasError('passwordMismatch') 
+                            && registerForm.form.touched">
+        Mật khẩu không khớp
+      </p>
+    </div>
+    <button type="button" class="btn btn-primary btn-block mb-4" (click)="registerForm.form.markAsTouched();register()">Đăng ký</button>
 
 
-    
+
   </form>
 
   <form [ngClass]="{'hidden-element': isVerify}">
-    <h5>Mã xác thực đã được gửi đến email user.com</h5>
+    <h5>Mã xác thực đã được gửi đến email của bạn</h5>
     <div class="form-outline mb-4">
-        <label class="form-label" for="form2Example1">Mã xác thực</label>
-      <input type="text" [(ngModel)]="verificationToken" name="verificationToken" id="form2Example1" class="form-control" />
+      <label class="form-label" for="form2Example1">Mã xác thực</label>
+      <input type="text" [(ngModel)]="verificationToken" name="verificationToken" id="form2Example1"
+        class="form-control" />
     </div>
-    
 
-    <button type="button" class="btn btn-primary btn-block mb-4" (click)="verify()" >Xác thực</button>
-    <button type="button" class="btn btn-primary btn-block mb-4" (click)="sendEmail()"
-      *ngIf="canSendMail"
-    >Gửi lại mã</button>
+
+    <button type="button" class="btn btn-primary btn-block mb-4" (click)="verify()">Xác thực</button>
+    <button type="button" class="btn btn-primary btn-block mb-4" (click)="sendEmail()" *ngIf="canSendMail">Gửi lại
+      mã</button>
 
   </form>
-
+  <div class="text-center">
+    <p>Bạn đã có tài khoản? <a class="register-link" style="cursor: pointer;" [routerLink]='["/login"]'>Đăng
+        nhập</a></p>
+  </div>
 
 </div>

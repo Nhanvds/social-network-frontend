@@ -1,0 +1,67 @@
+.fixed-height-img {
+    max-height: 100px; /* Chiều cao tối đa */
+    width: auto; /* Chiều rộng tự động */
+    object-fit: cover; /* Đảm bảo giữ nguyên tỉ lệ và cắt ảnh nếu cần thiết */
+    display: block; /* Đảm bảo ảnh không chiếm toàn bộ chiều rộng thẻ cha */
+    margin: 0 auto; /* Căn giữa ảnh theo chiều ngang */
+}
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  
+  .form-container {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: .5rem;
+  }
+  
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    padding: .5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .row {
+    display: flex;
+    align-items: center;
+  }
+  
+  .row .col-sm-2 {
+    flex: 0 0 auto;
+    width: 20%;
+    max-width: 20%;
+  }
+  
+  .row .col-sm-10 {
+    flex: 1;
+    max-width: 80%;
+  }
+  
+  .btn {
+    margin-top: 1rem;
+  }
+  
+  .img-thumbnail {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+  }
+  

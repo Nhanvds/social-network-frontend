@@ -13,8 +13,6 @@ import { ApiResponse } from 'src/app/response/api.response';
 export class HeaderComponent implements OnInit{
   isLoggedIn: boolean = false;
   userDetail?:UserDetail;
-  isPopoverOpen = false;
-  activeNavItem: number = 0;
   
   constructor (
     private userService:UserService,
@@ -22,13 +20,17 @@ export class HeaderComponent implements OnInit{
     private router: Router
   ){
 
-
   }
   ngOnInit(): void {
     this.userService.isLoggedIn.subscribe(status => {
       this.isLoggedIn = status;
     });
-    const userId:number = this.tokenService.getUserId();
+    this.userService.update$.subscribe(()=>{
+      this.getUserDetail();
+    })
+      this.getUserDetail();
+  }
+  getUserDetail(){
     this.userService.getUserDetail().subscribe({
       next:(response:ApiResponse)=>{
         if(response.success){

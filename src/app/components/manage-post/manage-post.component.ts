@@ -13,15 +13,15 @@ import { PostService } from 'src/app/service/post.service';
 })
 export class ManagePostComponent implements OnInit {
 
-  postId: number = 0;
-  userId: number = 0;
+  postId?: number;
+  userId?: number;
   content: string = '';
   createdTimeFrom: string = '';
   createdTimeTo: string = '';
   isLocked: boolean = false;
   privacyPost: boolean = true;
 
-  pageSize: number = 2;
+  pageSize: number = 5;
   pageNumber: number = 0;
   commonSearch: string = '';
   sortProperty: string = 'createdAt';
@@ -46,6 +46,7 @@ export class ManagePostComponent implements OnInit {
       id: this.postId,
       content: this.content,
       userId: this.userId,
+      postId:this.postId,
       isLocked: this.isLocked,
       createdTimeFrom: this.createdTimeFrom?new Date(this.createdTimeFrom).toISOString():this.createdTimeFrom,
       createdTimeTo: this.createdTimeTo?new Date(this.createdTimeTo).toISOString():this.createdTimeTo,

@@ -22,6 +22,7 @@ export class PostService{
     private apiPostImages=`${environment.apiBaseUrl}/post-images`;
     private apiSearchPost=`${environment.apiBaseUrl}/posts/list`;
     private apiReaction= `${environment.apiBaseUrl}/posts/like`;
+    private apiUpdatePost =`${environment.apiBaseUrl}/posts`;
 
 
 
@@ -92,6 +93,8 @@ export class PostService{
     deleteReaction(postId:number):Observable<any>{
         return this.http.delete(`${this.apiReaction}/${postId}`,this.apiConfig);
     }
-
+    updatePost(id:number,postDto:PostDTO):Observable<any>{
+        return this.http.put(`${this.apiUpdatePost}/${id}`,postDto,this.apiConfig);
+    }
 
 }

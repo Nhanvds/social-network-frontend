@@ -1,15 +1,16 @@
 
-.post{
- 
-    border-radius: 10px;
-    margin-bottom: 40px;
-}
+
 .fixed-height-img {
     max-height: 100px; /* Chiều cao tối đa */
     width: auto; /* Chiều rộng tự động */
     object-fit: cover; /* Đảm bảo giữ nguyên tỉ lệ và cắt ảnh nếu cần thiết */
     display: block; /* Đảm bảo ảnh không chiếm toàn bộ chiều rộng thẻ cha */
     margin: 0 auto; /* Căn giữa ảnh theo chiều ngang */
+}
+.post{
+ 
+    border-radius: 10px;
+    margin-bottom: 40px;
 }
 
 .carousel-item img {
@@ -28,26 +29,22 @@
     align-items: center;
 }
 .btn-create-post{
+    background-color: rgb(197, 197, 183);
     border-radius: 10px;
-    width: 90%;
+    width: 100%;
     height: 50px;
 }
 .create-post{
     height: 100px;
     border-radius: 10px;
-    background-color: #242527;
     margin-bottom: 20px;
 }
-.modal-content {
-    background-color:#242527; 
-    color: white; 
-}
 .modal-body{
-    height: 700px;
+    height: 600px;
 }
 .modal-body .content{
     margin-top: 5px;
-    background-color: #3a3b3d;
+    background-color: #f5f5ff;
     border-radius: 15px;
 }
 .content-post{

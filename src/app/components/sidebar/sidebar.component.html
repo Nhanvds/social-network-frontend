@@ -1,5 +1,5 @@
 <div class=" position-fixed " style="padding: 10px; border-radius: 10px;" *ngIf="isLoggedIn">
-    <h5>Danh sách người dùng </h5>
+    <h2>Danh sách người dùng </h2>
     <select class="form-select form-select-sm" style="width: 60%;" aria-label="Small select example" [(ngModel)]="asc"
         name="asc" (change)="search()">
         <option value="true" [selected]="asc==true">Tăng dần</option>
@@ -16,8 +16,8 @@
         <button class="btn btn-outline-success" (click)="search()">Tìm </button>
     </form>
 </div>
-<div class="scrollbar-hidden " style="height: 350px; overflow-y: auto;margin-top: 170px;" *ngIf="isLoggedIn">
-    <div class="container d-flex flex-column">
+<div class="scrollbar-hidden " style="height: 350px; overflow-y: auto;margin-top: 185px;" *ngIf="isLoggedIn">
+    <div class="container d-flex flex-column" style="min-height: 350px;">
 
         <div class="d-flex flex-row" *ngFor="let user of userList ">
             <div class="p-2">
@@ -30,8 +30,8 @@
             </div>
         </div>
         <div>
-            <mat-paginator [length]="totalElements" [pageSize]="pageSize" 
-            [pageSizeOptions]="[2, 5, 10]"
+            <mat-paginator [length]="totalElements" 
+            [pageSize]="pageSize" 
             (page)="onPageChange($event)" aria-label="Select page">
             </mat-paginator>
         </div>

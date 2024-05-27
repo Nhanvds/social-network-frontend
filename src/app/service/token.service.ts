@@ -20,7 +20,7 @@ export class TokenService{
     removeToken():void{
         localStorage.removeItem(this.TOKEN_KEY);
     }
-
+    
     getUserId():number{
         let token = localStorage.getItem(this.TOKEN_KEY);
         if(!token){
@@ -35,6 +35,14 @@ export class TokenService{
             return false;
         }
         return this.jwtHelperService.isTokenExpired(token);
+    }
+    getScopes():string[]{
+        let token = this.getToken();
+        if(token==null){
+            return [''];
+        }
+        let userObject = this.jwtHelperService.decodeToken(token);
+        return userObject['scope'].split(' ');
     }
 
 }

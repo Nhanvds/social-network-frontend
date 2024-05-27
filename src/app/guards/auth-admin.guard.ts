@@ -2,11 +2,10 @@ import { ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot } from '@ang
 import { TokenService } from '../service/token.service';
 import { Router } from '@angular/router';
 import { Injectable, inject } from '@angular/core';
-
 @Injectable({
   providedIn:'root'
 })
-export class AuthGuard{
+export class AuthAdminGuard{
   constructor(
     private tokenService: TokenService,
     private router: Router
@@ -17,7 +16,7 @@ export class AuthGuard{
     const isUserIdValid = this.tokenService.getUserId() >0;
     const scopes:string[] = this.tokenService.getScopes();
 
-    if(!isTokenExpired&& isUserIdValid&& scopes.includes('USER')){
+    if(!isTokenExpired&& isUserIdValid&& scopes.includes('ADMIN')){
       return true;
     }else{
       this.router.navigate(["/login"])
@@ -28,5 +27,11 @@ export class AuthGuard{
 
 export const authGuardFn: CanActivateFn = (route, state) => {
   
-  return inject(AuthGuard).canActivate(route,state);
+  return inject(AuthAdminGuard).canActivate(route,state);
 };
+
+export const authAdminGuardFn: CanActivateFn = (route, state) => {
+  
+  return inject(AuthAdminGuard).canActivate(route,state);
+};
+

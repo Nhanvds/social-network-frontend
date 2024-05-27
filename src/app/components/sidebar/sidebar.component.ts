@@ -21,7 +21,7 @@ export class SidebarComponent implements OnInit {
   userList?: UserCard[];
 
   inputSearch: string = "";
-  pageSize: number =2;
+  pageSize: number =5;
   pageNumber: number = 0;
   sortProperty: string = "userName";
   asc: boolean = true;
@@ -34,6 +34,9 @@ export class SidebarComponent implements OnInit {
     this.userService.isLoggedIn.subscribe(status => {
       this.isLoggedIn = status;
     });
+    this.userService.update$.subscribe(()=>{
+      this.search();
+    })
     const userId: number = this.tokenService.getUserId();
     if (userId != -1) {
       this.isLoggedIn = true;
